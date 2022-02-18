@@ -50,8 +50,7 @@ const timeDifference = (dateFuture, dateNow) => {
 };
 
 const formatAnswer = (arrayA, arrayB, arrayC, arrayD, indexes) => {
-    let firstA = arrayA.sort()[0];
-    console.log(firstA, 'firt A');
+    let firstA = arrayA.sort()[0];    
     let lastA = arrayA.sort().reverse()[0];
     let firstB = arrayB[0];
     let lastB = arrayB.sort().reverse()[0];

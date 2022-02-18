@@ -1,11 +1,5 @@
 const connection = require('./connection');
 
-const getAllCarsPositions = async () => {
-    const allCarsPositions = await connection()
-    .then((db) => db.collection('posicoes').find().toArray());    
-    return allCarsPositions;
-};
-
 const getAllCheckPoints = async () => {
     const allCheckPoints = await connection()
     .then((db) => db.collection('base').find().toArray());    
@@ -19,4 +13,4 @@ const getByLicensePlate = async (licensePlate) => {
     return byLicensePlate;
 };
 
-module.exports = { getAllCarsPositions, getAllCheckPoints, getByLicensePlate };
+module.exports = { getAllCheckPoints, getByLicensePlate };

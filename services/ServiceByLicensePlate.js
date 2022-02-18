@@ -1,22 +1,16 @@
-const model = require('../models');
+const model = require('../models/ModelbyLicensePlate');
 const { isInside, formatAnswer } = require('../utils');
-
-const getAllCarsPositions = async() => {
-    const allCarsPositions = await model.getAllCarsPositions();      
-    return allCarsPositions;
-};
 
 const getAllCheckPoints = async() => {
     const allCheckPoints = await model.getAllCheckPoints();    
     return allCheckPoints;
 };
 
-const getCarsPositionsCheckPoints = async () => {
-    let carsPositions = await getAllCarsPositions();
-    const points = await getAllCheckPoints();
+const getCarsPositionsCheckPoints = async (cars, points) => { 
+    
     let carsPoints = [];
     
-    carsPositions.forEach((car) => {
+    cars.forEach((car) => {
         points.forEach((point) => {
             if (isInside (car.latitude, point.ponto_latitude, car.longitude, point.ponto_longitude, point.raio)) {
                 car.ponto = point.nome;
@@ -32,8 +26,8 @@ const getCarsPositionsCheckPoints = async () => {
 //Referência para remover arrays duplicadas dentro de um array
 // https://stackoverflow.com/questions/44014799/javascript-how-to-remove-duplicate-arrays-inside-array-of-arrays
 
-const getIndexes = async () => {
-    const cars = await getCarsPositionsCheckPoints();    
+const getIndexes = async (cars) => {
+        
     let indexes = [];
     cars.forEach((car) => {        
         indexes.push([car.placa, car.ponto]);
@@ -43,9 +37,9 @@ const getIndexes = async () => {
     return newIndexes;   
 };
 
-const getCarsWithDates = async () => {    
+const getCarsWithDates = async (cars) => {    
     let dates = [];
-    const cars = await getCarsPositionsCheckPoints();     
+       
     cars.map((car) => {
         dates.push({placa: car.placa, ponto: car.ponto, data:car.data});
     }); 
@@ -53,9 +47,7 @@ const getCarsWithDates = async () => {
     return dates;
 };
 
-const getCarsWithDuration = async () => { 
-    const indexes = await getIndexes();    
-    const carsWithDate = await getCarsWithDates();
+const getCarsWithDuration = async (indexes, carsWithDate) => {    
     let teste01Ponto24 = [];
     let teste01Ponto2 = [];
     let teste01Ponto1 = [];
@@ -80,11 +72,19 @@ const getCarsWithDuration = async () => {
     return result;
 }
 
-// const getByLicensePlate =  async (licensePlate) => {
-//     const byLicensePlate = await model.getByLicensePlate(licensePlate);
-//     const points = await getAllCheckPoints();
+const getByLicensePlate =  async (licensePlate) => {
+    
+    const cars = await model.getByLicensePlate(licensePlate);
+    const points = await getAllCheckPoints();
 
-//     return byLicensePlate;
-// }
+    let carsPositions = await getCarsPositionsCheckPoints(cars, points);
+    
+    const indexes = await getIndexes(cars);
+    const carsWithDate = await getCarsWithDates(carsPositions);
+    
+    const byLicensePlate = await getCarsWithDuration(indexes, carsWithDate);    
 
-module.exports = { getCarsWithDuration };
+    return byLicensePlate;
+}
+
+module.exports = { getByLicensePlate };

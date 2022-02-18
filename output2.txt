@@ -3,5 +3,3 @@
 > node index.js
 
 Ouvindo na porta 3001
-2018-12-14T02:08:56.000Z firt A
-2018-12-14T02:08:56.000Z firt A
